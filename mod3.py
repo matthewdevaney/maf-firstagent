@@ -18,12 +18,7 @@ def get_weather(
     conditions = ["sunny", "cloudy", "rainy", "stormy"]
     return f"The weather in {location} is {conditions[randint(0,3)]} with a high of {randint(10,30)}°C."
 
-
-
-
-
 # Run Agent
-
 async def main() -> None:
     # create client
     client = FoundryChatClient(
@@ -47,6 +42,7 @@ async def main() -> None:
     print("Agent: Tell me a fact about yourself.\n")
     user_message = input("User: ")
     print("\n")
+    
     result = await agent.run(user_message, session=session)
     print(f"Agent: {result}\n")
 
@@ -55,13 +51,6 @@ async def main() -> None:
     print(f"User: {user_message}\n")
     result = await agent.run(user_message, session=session)
     print(f"Agent: {result}\n")
-
-    """
-    async for chunk in agent.run(user_message, stream=True):
-        if chunk.text:
-            print(chunk.text, end="", flush=True)
-    print()
-    """
 
 if __name__ == "__main__":
     asyncio.run(main())
