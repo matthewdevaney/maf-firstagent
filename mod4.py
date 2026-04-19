@@ -1,0 +1,49 @@
+import asyncio
+from typing import Annotated
+
+from agent_framework import Agent, tool
+from agent_framework.foundry import FoundryChatClient
+from azure.identity import AzureCliCredential
+
+"""
+Agent Memory with Context Providers and Session State
+
+Context providers inject dynamic context into each agent call. This sample
+shows a provider that stores the user's name in session state and personalizes
+responses — the name persists across turns via the session.
+"""
+
+
+class UserMemoryProvider(ContextProvider):
+    """A context provider that remembers user info in session state"""
+
+    DEFAULT_SOURCE_ID = "user_memory"
+
+    def __init__(self):
+        super().__init__(self.DEFAULT_SOURCE_ID)
+
+    async def before_run():
+        pass
+
+    async def after_run():
+        pass
+
+
+async def main():
+
+    client = FoundryChatClient(
+        project_endpoint="https://maf-foundry-20260417.services.ai.azure.com/api/projects/proj-default",
+        model="gpt-5.3-chat",
+        credential=AzureCliCredential()
+    )
+
+    agent = Agent(
+        client=client,
+        name="MemoryAgent",
+        instructions="You are a friendly assistant.",
+        context_providers=[UserMemoryProvider()]
+    )
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
