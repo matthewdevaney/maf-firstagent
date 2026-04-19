@@ -22,8 +22,26 @@ class UserMemoryProvider(ContextProvider):
     def __init__(self):
         super().__init__(self.DEFAULT_SOURCE_ID)
 
-    async def before_run():
-        pass
+    async def before_run(
+        self,
+        *,
+        agent: Any,
+        session: AgentSession | None,
+        context: SessionContext,
+        state: dict[str, Any]
+    ) -> None:
+        """Inject personalization instructions based on stored user info"""
+        user_name = state.get("user_name")
+        if user_name:
+            context.extend_instructions(
+                self.source_id,
+                f"The user's name is {user_name}. Always address them by name"
+            )
+        else:
+            context.extend_instructions(
+                self.source_id,
+                "You don't know the user's name yet. Ask for it politely."
+            )
 
     async def after_run():
         pass
