@@ -41,8 +41,18 @@ def create_workflow():
     return WorkflowBuilder(start_executor=upper).add_edge(upper, reverse_text).build()
 
 
-def main() -> None:
-    pass
+async def main() -> None:
+    workflow = create_workflow()
+
+    events = await workflow.run("hello world")
+    print(f"Output: {events.get_outputs()}")
+    print(f"Final state: {events.get_final_state()}")
+
+    """
+    Expected output:
+      Output: ['DLROW OLLEH']
+      Final state: WorkflowRunState.IDLE
+    """
 
 
 if __name__ == "__main__":
